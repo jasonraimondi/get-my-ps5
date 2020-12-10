@@ -31,23 +31,29 @@ function addToCartLoop(id, guid, numTries, checkInterval = 10000) {
     });
 }
 
+const baseUrl = "https://direct.playstation.com";
+
 /** checkForPlaystationDirectRedirect
  * Recursively checks for redirects.
  * @param checkInterval - How often to check in ms
  * @param onSuccess - Callback function for successful redirect
  */
-async function checkForPlaystationDirectRedirect(checkInterval, onSuccess, numTries = 1) {
-    axios.get("https://direct.playstation.com/en-us/consoles/console/playstation5-console.3005816")
+async function checkForPlaystationDirectRedirect(checkInterval, onSuccess, numTries = 1, url = `${baseUrl}/en-us/consoles/console/playstation5-console.3005816`) {
+    axios.get(url)
         .then(response => {
-            if (response.data.indexOf("softblock") > 0) {
-                // They're sending us to reCAPTCHA, but it's not really the queue. Keep trying.
+            // Workaround for users who hit "JavaScript required page"
+            if (response.data.indexOf("The site requires JavaScript to be enabled!") > 0) {
+                // Parse the redirect URL from the data.
+                const redirectUrl = response.data.match(/\/\?c=[a-zA-Z(0-9)(&|=|%|.|\-)?]+/);
+
+                // Start the process again, except use the redirect URL instead of our baseUrl so we can try to get past Sony's measures
                 setTimeout(() => {
-                    console.log("No redirect detected. Trying again...");
+                    console.log("Redirect detected, but not necessarily for the queue. Checking again...");
                     console.log("Number of tries", numTries);
                     console.log("");
                     numTries++;
-
-                    checkForPlaystationDirectRedirect(checkInterval, onSuccess, numTries);
+                    
+                    checkForPlaystationDirectRedirect(checkInterval, onSuccess, numTries, `${baseUrl}${redirectUrl[0]}`)
                 }, checkInterval);
             } else if (response.data.indexOf("queue-it_log") > 0) {
                 onSuccess();
