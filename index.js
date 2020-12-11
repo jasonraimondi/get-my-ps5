@@ -1,4 +1,3 @@
-const open = require('open');
 const promptly = require('promptly');
 const puppeteer = require('puppeteer');
 
@@ -24,7 +23,7 @@ const playstationType = {
     
     const onSuccess = () => {
         console.log("Found it! Opening queue now...");
-        open(playstationType[choice].url);
+        spawn("explorer.exe", [playstationType[choice].url]);
     };
 
     checkForPlaystationDirectRedirect(5000, onSuccess, playstationType[choice].id, await puppeteer.launch());
