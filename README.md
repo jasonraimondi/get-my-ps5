@@ -4,6 +4,27 @@
 
 A simple command line interface (CLI) utility that checks for PlayStation 5 (disc or digital edition) every 5 seconds, then opens your browser as soon as it's available.
 
+## How is this fork different than camtheperson/get-my-ps5
+
+This fork contains dotenv support so you don't need to enter configuration options every boot. Take a look at [.env.sample](./.env.sample) and copy it to a file `.env` to enable. 
+
+```
+# disc/digital
+#PS5_VERSION=disc
+
+# true/false
+#PLAY_ALARM=1
+
+# MS
+#CHECK_INTERVAL=30000
+
+# chrome, firefox or /path/to/browser.exe
+#BROWSER=firefox
+
+# true/false
+#INCOGNITO=0
+```
+
 ## How can I support this project?
 
 Follow me on Twitter: [@CamThePerson](https://twitter.com/CamThePerson) (feel free to hit me up if you have any trouble)
